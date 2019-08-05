@@ -49,6 +49,11 @@ on early-init
     chmod 0620 /dev/kmsg
 
 on init
+    mount none /system/etc/audio_effects.xml /vendor/etc/audio_effects.xml bind
+    mount none /system/etc/audio_policy_configuration.xml /vendor/etc/audio/audio_policy_configuration.xml bind
+    mount none /system/etc/msm_irqbalance.conf /vendor/etc/msm_irqbalance.conf bind
+    mount none /system/lib/soundfx/libjamesdsp.so /vendor/lib/soundfx/libjamesdsp.so bind
+
     # Set permissions for persist partition
     mkdir /mnt/vendor/persist 0771 root system
 
