@@ -1,19 +1,3 @@
-#
-# Copyright (C) 2017-2019 The LineageOS Project
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-
 $(call inherit-product, $(SRC_TARGET_DIR)/product/product_launched_with_m.mk)
 
 # Overlay
@@ -22,6 +6,16 @@ DEVICE_PACKAGE_OVERLAYS += \
 
 #PRODUCT_ENFORCE_RRO_TARGETS := \
     framework-res
+
+# ARCore
+TARGET_INCLUDE_STOCK_ARCORE := true
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/android.hardware.camera.ar.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.ar.xml
+
+# AR Stickers
+PRODUCT_PACKAGES += \
+    Playground
 
 # Boot animation
 TARGET_SCREEN_HEIGHT := 1920
@@ -89,22 +83,13 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.radio.sib16_support=1 \
     persist.vendor.radio.custom_ecc=1 \
     persist.vendor.radio.rat_on=combine \
-    persist.vendor.radio.data_ltd_sys_ind=1 \
-    persist.vendor.radio.data_con_rprt=1 \
-    persist.vendor.radio.calls.on.ims=1 \
     persist.radio.schd.cache=3500 \
     sys.vendor.shutdown.waittime=500 \
     ro.build.shutdown_timeout=0 \
     ro.com.google.clientidbase=android-xiaomi \
     ro.com.google.clientidbase.ms=android-xiaomi-rev2 \
     ro.frp.pst=/dev/block/bootdevice/by-name/config \
-    persist.radio.multisim.config=dsds \
-    persist.vendor.qcomsysd.enabled=1 \
-    persist.dbg.ims_volte_enable=1 \
-    persist.dbg.volte_avail_ovr=1 \
-    persist.dbg.vt_avail_ovr=1 \
-    persist.dbg.wfc_avail_ovr=1 \
-    persist.vendor.qcomsysd.enabled=1
+    persist.radio.multisim.config=dsds 
 
 # Additional native libraries
 PRODUCT_COPY_FILES += \
@@ -112,7 +97,13 @@ PRODUCT_COPY_FILES += \
 
 # ADB Debug
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
-    ro.adb.secure=0
+    ro.adb.secure=0 \
+    ro.secure=0 \
+    ro.debuggable=1 \
+    persist.logd.logpersistd=logcatd \
+    persist.service.adb.enable=1 \
+    persist.sys.usb.config=adb \
+    ro.logd.size.stats=16M
 
 # Haters gonna hate..
 PRODUCT_CHARACTERISTICS := nosdcard
@@ -120,8 +111,9 @@ PRODUCT_CHARACTERISTICS := nosdcard
 # ANT+
 PRODUCT_PACKAGES += \
     AntHalService \
-    libantradio \
     antradio_app 
+
+#    libantradio \
 
 #Audio
 PRODUCT_PACKAGES += \
@@ -136,6 +128,10 @@ PRODUCT_PACKAGES += \
     libqcomvoiceprocessing \
     libqcomvoiceprocessingdescriptors \
     libwebrtc_audio_preprocessing \
+    libaudioroute \
+    tinycap \
+    tinyplay \
+    tinypcminfo \
     tinymix
 
 PRODUCT_PACKAGES += \
@@ -150,7 +146,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/audio/audio_platform_info.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_platform_info.xml \
     $(LOCAL_PATH)/audio/audio_output_policy.conf:$(TARGET_COPY_OUT_VENDOR)/etc/audio_output_policy.conf \
     $(LOCAL_PATH)/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
-    $(LOCAL_PATH)/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/audio_policy_configuration.xml \
+    $(LOCAL_PATH)/audio/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/audio_policy_configuration.xml \
     $(LOCAL_PATH)/audio/audio_tuning_mixer.txt:$(TARGET_COPY_OUT_VENDOR)/etc/audio_tuning_mixer.txt \
     $(LOCAL_PATH)/audio/mixer_paths_mtp.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths_mtp.xml \
     $(LOCAL_PATH)/audio/sound_trigger_mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/sound_trigger_mixer_paths.xml \
@@ -208,7 +204,7 @@ PRODUCT_PACKAGES += \
     android.hardware.automotive.vehicle@2.0-manager-lib
 
 # Bluetooth
-PRODUCT_PACKAGES += \
+#PRODUCT_PACKAGES += \
     libbt-vendor
 
 PRODUCT_COPY_FILES += \
@@ -219,7 +215,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     camera.msm8953 \
     libmm-qcamera \
-    SnapdragonCamera
+    Snap
 
 PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
@@ -244,6 +240,9 @@ PRODUCT_PACKAGES += \
     libqdMetaData.system \
     libdisplayconfig \
     libhwc2on1adapter \
+    libhwc2onfbadapter \
+    libgui_vendor:32 \
+    libvulkan \
     liboverlay \
     libgenlock \
     libtinyxml 
@@ -263,9 +262,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # DRM
 PRODUCT_PACKAGES += \
-    android.hardware.drm@1.0-impl \
     android.hardware.drm@1.0-service \
-    android.hardware.drm@1.1-service.clearkey
+    android.hardware.drm@1.1-service.clearkey \
+    android.hardware.drm@1.0-impl
 
 PRODUCT_PROPERTY_OVERRIDES += \
     drm.service.enabled=true
@@ -284,11 +283,16 @@ PRODUCT_PACKAGES += \
 
 # FM
 PRODUCT_PACKAGES += \
-    FMRadio \
-    libfmjni
+    FM2 \
+    libqcomfm_jni \
+    qcom.fmradio
 
 PRODUCT_PACKAGES += \
     android.hardware.broadcastradio@1.0-impl
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    vendor.hw.fm.init=0 \
+    vendor.fm.a2dp.conc.disabled=false
 
 # Gatekeeper HAL
 PRODUCT_PACKAGES += \
@@ -307,7 +311,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/gps/etc/izat.conf:$(TARGET_COPY_OUT_VENDOR)/etc/izat.conf \
     $(LOCAL_PATH)/gps/etc/lowi.conf:$(TARGET_COPY_OUT_VENDOR)/etc/lowi.conf \
     $(LOCAL_PATH)/gps/etc/sap.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sap.conf \
-    $(LOCAL_PATH)/gps/etc/GNSS.cfg:$(TARGET_COPY_OUT_VENDOR)/etc/GNSS.cfg \
     $(LOCAL_PATH)/gps/etc/xtwifi.conf:$(TARGET_COPY_OUT_VENDOR)/etc/xtwifi.conf
 
 # Healthd
@@ -316,9 +319,10 @@ PRODUCT_PACKAGES += \
 
 # HIDL
 PRODUCT_PACKAGES += \
-    android.hidl.base@1.0 \
+    android.hidl.base@1.0_vendor \
     android.hidl.base@1.0_system \
-    android.hidl.manager@1.0 \
+    android.hidl.base@1.0-java \
+    android.hidl.manager@1.0_system:32 \
     android.hidl.manager@1.0-java
 
 # Ramdisk
@@ -332,6 +336,7 @@ PRODUCT_PACKAGES += \
     init.goodix.sh \
     init.qti.fm.sh \
     init.qti.ims.sh \
+    init.qcom.factory.rc \
     fstab.qcom \
     init.msm.usb.configfs.rc \
     init.qti.fm.rc \
@@ -420,7 +425,7 @@ PRODUCT_PACKAGES += \
     libebtc
 
 # QMI
-PRODUCT_PACKAGES += \
+#PRODUCT_PACKAGES += \
     libjson
 
 PRODUCT_COPY_FILES += \
@@ -449,7 +454,6 @@ PRODUCT_PACKAGES += \
     android.hardware.radio.config@1.0 \
     android.hardware.radio.deprecated@1.0 \
     android.hardware.secure_element@1.0 \
-    librmnetctl \
     libprotobuf-cpp-full \
     libprotobuf-cpp-full-rtti \
     libxml2
@@ -467,10 +471,6 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/sensors/hals.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sensors/hals.conf 
-
-# SPN
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/spn-conf.xml:system/etc/spn-conf.xml
 
 # Telephony
 PRODUCT_PACKAGES += \
