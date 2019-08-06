@@ -333,7 +333,6 @@ PRODUCT_PACKAGES += \
     init.qcom.sh \
     init.qcom.usb.sh \
     init.qcom.wifi.sh \
-    init.jamesdsp.sh \
     init.goodix.sh \
     init.qti.fm.sh \
     init.qti.ims.sh \
