@@ -1,2 +1,2 @@
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/bootleg_markw.mk
+    $(LOCAL_DIR)/dot_markw.mk
