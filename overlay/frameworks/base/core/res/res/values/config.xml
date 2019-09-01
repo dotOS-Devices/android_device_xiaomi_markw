@@ -549,4 +549,10 @@
     <!-- Do not translate. Default access point SSID used for tethering -->
     <string name="wifi_tether_configure_ssid_default" translatable="false">Redmi 4 Prime</string>
 
+    <!-- Default state for LiveDisplay -->
+    <bool name="config_liveDisplayAvailable">true</bool>
+
+    <!-- Use default display mode -->
+    <integer name="config_defaultLiveDisplayMode">0</integer>
+
 </resources>
